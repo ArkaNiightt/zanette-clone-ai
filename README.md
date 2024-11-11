@@ -1,4 +1,4 @@
-# 🌟 Leonardo Zanette Clone AI - README
+# 🌟 Leonardo Zanette Clone AI
 
 Este projeto implementa um clone do assistente de IA "Zanette Clone AI" usando a biblioteca Streamlit e a API da OpenAI. Ele permite que os usuários conversem com o assistente de IA e recebam respostas instantâneas de forma simples e intuitiva.
 
