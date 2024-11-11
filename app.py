@@ -90,28 +90,31 @@ if prompt := st.chat_input("Mande uma mensagem"):
                 thread_id=st.session_state.thread_id, run_id=run.id
             )
 
-    if run.status == "failed":
-        st.error("Ocorreu um erro ao processar a resposta.")
-    else:
-        # Obter as mensagens do thread
-        messages = client.beta.threads.messages.list(
-            thread_id=st.session_state.thread_id
-        )
+        # Substituir a parte do código que processa a resposta do assistente
+        if run.status == "failed":
+            st.error("Ocorreu um erro ao processar a resposta.")
+        else:
+            # Obter as mensagens do thread
+            messages = client.beta.threads.messages.list(
+                thread_id=st.session_state.thread_id
+            )
 
-        # Processar a resposta do assistente
-        full_response = ""
-        for message in messages:
-            if message.role == "assistant":
-                for content in message.content:
-                    if content.type == "text":
-                        full_response += content.text.value
+            # Processar apenas a resposta mais recente do assistente
+            latest_response = ""
+            for message in messages.data:
+                if message.role == "assistant":
+                    for content in message.content:
+                        if content.type == "text":
+                            latest_response = content.text.value
+                    break  # Sair do loop após encontrar a primeira resposta do assistente
 
-        # Adicionar a resposta do assistente à sessão
-        st.session_state.messages.append(
-            {"role": "assistant", "content": full_response}
-        )
+            # Adicionar apenas a resposta mais recente do assistente à sessão
+            if latest_response:
+                st.session_state.messages.append(
+                    {"role": "assistant", "content": latest_response}
+                )
 
-    # Reexibir todas as mensagens
-    st.rerun()
+        # Reexibir todas as mensagens
+        st.rerun()
 
 # Não é necessário chamar display_messages() aqui novamente
