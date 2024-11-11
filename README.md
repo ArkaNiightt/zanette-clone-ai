@@ -13,7 +13,7 @@ Este projeto implementa um clone do assistente de IA "Zanette Clone AI" usando a
 
 1. **Clone este repositório** em seu computador:
    ```sh
-   git clone https://github.com/seu-usuario/zanette-clone-ai.git
+   git clone https://github.com/ArkaNiightt/zanette-clone-ai.git
    cd zanette-clone-ai
    ```
 
