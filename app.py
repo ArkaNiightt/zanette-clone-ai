@@ -7,7 +7,6 @@ import requests
 from io import BytesIO
 import requests
 import base64
-import io
 
 # Configuração da página
 st.set_page_config(
@@ -206,7 +205,9 @@ if prompt := st.chat_input("Mande uma mensagem"):
 
                 # Gerar e reproduzir áudio automaticamente se a opção estiver ativada
                 if auto_voice_response:
-                    audio_content = generate_speech(latest_response, st.secrets["VOICE_ID"])
+                    audio_content = generate_speech(
+                        latest_response, st.secrets["VOICE_ID"]
+                    )
                     if audio_content:
                         play_audio(audio_content)
 
