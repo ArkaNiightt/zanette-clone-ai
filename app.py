@@ -1,15 +1,92 @@
 import streamlit as st
 from openai import OpenAI
 import time
+from PIL import Image
+import os
+import requests
+from io import BytesIO
+import requests
+import base64
+import io
 
 # Configuração da página
 st.set_page_config(
-    page_title="LEONARDO ZANETTE CLONE AI", page_icon="🤖", layout="wide"
+    page_title="LEONARDO ZANETTE CLONE AI", page_icon="🤖", layout="centered"
 )
+
+# Adicione isso após a definição de st.set_page_config
+st.sidebar.title("Configurações")
+auto_voice_response = st.sidebar.checkbox("Respostas de voz automáticas", value=False)
 
 # Título e descrição
 st.title("ZANETTE CLONE AI")
 st.markdown("Converse com o assistente de IA e receba respostas instantâneas.")
+
+
+def generate_speech(text, voice_id):
+    url = f"https://api.elevenlabs.io/v1/text-to-speech/{voice_id}"
+    headers = {
+        "Accept": "audio/mpeg",
+        "Content-Type": "application/json",
+        "xi-api-key": st.secrets["ELEVENLABS_API_KEY"],
+    }
+    data = {
+        "text": text,
+        "model_id": "eleven_multilingual_v2",
+        "voice_settings": {
+            "stability": 0.38,
+            "similarity_boost": 0.75,
+            "use_speaker_boost": True,
+        },
+    }
+
+    response = requests.post(url, json=data, headers=headers)
+
+    if response.status_code == 200:
+        return response.content
+    else:
+        st.error(f"Erro ao gerar áudio: {response.status_code}")
+        return None
+
+
+def play_audio(audio_content):
+    audio_base64 = base64.b64encode(audio_content).decode("utf-8")
+    audio_tag = f'<audio autoplay="true" src="data:audio/mp3;base64,{audio_base64}">'
+    st.markdown(audio_tag, unsafe_allow_html=True)
+
+
+def load_avatar(image_source):
+    """
+    Carrega uma imagem de avatar a partir de um caminho local ou URL.
+
+    :param image_source: String contendo o caminho local ou URL da imagem
+    :return: Objeto PIL.Image ou None se a imagem não puder ser carregada
+    """
+    try:
+        if image_source.startswith(("http://", "https://")):
+            # Se for uma URL
+            response = requests.get(image_source)
+            img = Image.open(BytesIO(response.content))
+        else:
+            # Se for um caminho local
+            if os.path.exists(image_source):
+                img = Image.open(image_source)
+            else:
+                raise FileNotFoundError(f"Arquivo não encontrado: {image_source}")
+
+        # Redimensiona a imagem para um tamanho padrão (opcional)
+        img = img.resize((128, 128))
+        return img
+    except Exception as e:
+        st.warning(f"Não foi possível carregar a imagem do avatar: {e}")
+        return None
+
+
+# Carregue a imagem do avatar
+# Você pode usar um caminho local ou uma URL aqui
+avatar_image = load_avatar(st.secrets["IMAGE_ASSISTANT_URL"])
+# ou
+# avatar_image = load_avatar("https://exemplo.com/caminho/para/imagem_avatar.png")
 
 
 # Inicializando o cliente OpenAI
@@ -38,9 +115,21 @@ if "thread_id" not in st.session_state:
 
 # Função para exibir mensagens
 def display_messages():
-    for message in st.session_state.messages:
-        with st.chat_message(message["role"]):
-            st.markdown(message["content"])
+    for index, message in enumerate(st.session_state.messages):
+        if message["role"] == "user":
+            with st.chat_message("user"):
+                st.markdown(message["content"])
+        elif message["role"] == "assistant":
+            with st.chat_message("assistant", avatar=avatar_image):
+                st.markdown(message["content"])
+                if st.button(
+                    "Ouvir resposta", key=f"audio_{index}_{hash(message['content'])}"
+                ):
+                    audio_content = generate_speech(
+                        message["content"], st.secrets["VOICE_ID"]
+                    )
+                    if audio_content:
+                        play_audio(audio_content)
 
 
 # Função para limpar o histórico
@@ -94,6 +183,7 @@ if prompt := st.chat_input("Mande uma mensagem"):
         if run.status == "failed":
             st.error("Ocorreu um erro ao processar a resposta.")
         else:
+            # Dentro do bloco else após verificar se run.status não é "failed"
             # Obter as mensagens do thread
             messages = client.beta.threads.messages.list(
                 thread_id=st.session_state.thread_id
@@ -114,7 +204,14 @@ if prompt := st.chat_input("Mande uma mensagem"):
                     {"role": "assistant", "content": latest_response}
                 )
 
+                # Gerar e reproduzir áudio automaticamente se a opção estiver ativada
+                if auto_voice_response:
+                    audio_content = generate_speech(latest_response, st.secrets["VOICE_ID"])
+                    if audio_content:
+                        play_audio(audio_content)
+
         # Reexibir todas as mensagens
         st.rerun()
+
 
 # Não é necessário chamar display_messages() aqui novamente
