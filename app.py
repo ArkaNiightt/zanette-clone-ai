@@ -10,7 +10,7 @@ import base64
 
 # Configuração da página
 st.set_page_config(
-    page_title="LEONARDO ZANETTE CLONE AI", page_icon="🤖", layout="centered"
+    page_title="Perfect Pay Clone AI", page_icon=st.secrets["IMAGE_ASSISTANT_URL"], layout="centered"
 )
 
 # Adicione isso após a definição de st.set_page_config
@@ -20,7 +20,7 @@ st.sidebar.info("Obs: App e Clone em desenvolvimento. Em casos de erros reporte 
 # auto_voice_response = st.sidebar.checkbox("Respostas de voz automáticas", value=False)
 
 # Título e descrição
-st.title("ZANETTE CLONE AI")
+st.title("🤖 ZANETTE CLONE AI")
 st.markdown("Converse com o assistente de IA e receba respostas instantâneas.")
 st.markdown("---")
 
@@ -125,7 +125,7 @@ def display_messages():
             with st.chat_message("assistant", avatar=avatar_image):
                 st.markdown(message["content"])
                 if st.button(
-                    "Ouvir resposta", key=f"audio_{index}_{hash(message['content'])}"
+                    "🔊", key=f"audio_{index}_{hash(message['content'])}"
                 ):
                     audio_content = generate_speech(
                         message["content"], st.secrets["VOICE_ID"]
