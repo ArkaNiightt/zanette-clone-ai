@@ -15,11 +15,14 @@ st.set_page_config(
 
 # Adicione isso após a definição de st.set_page_config
 st.sidebar.title("Configurações")
-auto_voice_response = st.sidebar.checkbox("Respostas de voz automáticas", value=False)
+st.sidebar.markdown("---")
+st.sidebar.info("Obs: App e Clone em desenvolvimento. Em casos de erros reporte ao desenvolvedor.")
+# auto_voice_response = st.sidebar.checkbox("Respostas de voz automáticas", value=False)
 
 # Título e descrição
 st.title("ZANETTE CLONE AI")
 st.markdown("Converse com o assistente de IA e receba respostas instantâneas.")
+st.markdown("---")
 
 
 def generate_speech(text, voice_id):
@@ -204,12 +207,12 @@ if prompt := st.chat_input("Mande uma mensagem"):
                 )
 
                 # Gerar e reproduzir áudio automaticamente se a opção estiver ativada
-                if auto_voice_response:
-                    audio_content = generate_speech(
-                        latest_response, st.secrets["VOICE_ID"]
-                    )
-                    if audio_content:
-                        play_audio(audio_content)
+                # if auto_voice_response:
+                #     audio_content = generate_speech(
+                #         latest_response, st.secrets["VOICE_ID"]
+                #     )
+                #     if audio_content:
+                #         play_audio(audio_content)
 
         # Reexibir todas as mensagens
         st.rerun()
