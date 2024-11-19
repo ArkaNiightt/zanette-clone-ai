@@ -8,6 +8,8 @@ Este projeto implementa um clone do assistente de IA "Zanette Clone AI" usando a
 - Bibliotecas Python:
   - `streamlit`
   - `openai`
+  - `Pillow`
+  - `requests`
 
 ## 🚀 Instalação
 
@@ -33,6 +35,9 @@ Este projeto implementa um clone do assistente de IA "Zanette Clone AI" usando a
    [secrets]
    OPENAI_API_KEY = "sua-chave-api-openai"
    OPENAI_ASSISTANT_ID = "seu-assistente-id"
+   ELEVENLABS_API_KEY = "sua-chave-api-elevenlabs"
+   VOICE_ID = "id-voz-da-sua-escolha"
+   IMAGE_ASSISTANT_URL = "url-image-assistente"
    ```
 
 ## ▶️ Como Executar
@@ -50,8 +55,10 @@ Depois de iniciar o servidor, abra o link local fornecido (normalmente `http://l
 - **💬 Conversação Instantânea:** Interaja com o assistente de IA enviando mensagens e receba respostas instantâneas em uma interface amigável.
 - **📜 Histórico de Conversas:** As mensagens enviadas e recebidas são armazenadas na sessão do Streamlit, permitindo acompanhar toda a conversa.
 - **🧹 Limpar Histórico:** Use o botão na barra lateral para limpar o histórico de conversas e começar um novo diálogo a qualquer momento.
+- **🔊 Respostas de Voz:** O assistente pode gerar respostas em áudio utilizando a API da ElevenLabs. Basta clicar no botão de áudio ao lado das mensagens do assistente.
+- **🖼️ Avatar Personalizado:** A imagem do avatar do assistente pode ser carregada a partir de uma URL ou de um caminho local, personalizando ainda mais a experiência do usuário.
 
-## 🛠️ Organização do Código
+## 🔧 Organização do Código
 
 - **Configuração da Página:** Define o título, o ícone e a largura da página para melhorar a experiência do usuário.
 - **Inicialização do Cliente OpenAI:** Configura a autenticação com a API da OpenAI utilizando as chaves de API fornecidas.
@@ -59,23 +66,29 @@ Depois de iniciar o servidor, abra o link local fornecido (normalmente `http://l
 - **Funções Auxiliares:**
   - `display_messages()`: Exibe as mensagens salvas na sessão, mantendo o histórico da conversa visível.
   - `clear_history()`: Limpa o histórico de conversas e exclui o `thread` associado na API da OpenAI.
+  - `generate_speech()`: Gera áudio a partir do texto usando a API ElevenLabs.
+  - `play_audio()`: Reproduz o áudio gerado na interface do Streamlit.
+  - `load_avatar()`: Carrega a imagem do avatar a partir de uma URL ou caminho local.
 
 ## 📌 Utilização
 
 1. **Enviar Mensagens:** Use a caixa de entrada na parte inferior da página para enviar mensagens para o assistente de IA e receber respostas instantâneas.
 2. **Limpar Histórico:** Caso queira começar uma nova conversa, clique no botão "Limpar Histórico" localizado na barra lateral para apagar todo o histórico atual.
 3. **Interação com o Assistente:** Sempre que uma mensagem é enviada, o assistente é acionado e a resposta correspondente é exibida na tela, criando uma experiência de diálogo contínua.
+4. **Reproduzir Resposta em Áudio:** Clique no botão "🔊" ao lado das mensagens do assistente para ouvir a resposta em áudio.
 
 ## 💡 Dicas de Uso
 
 - **⏱️ Respostas Rápidas:** O assistente pode demorar alguns segundos para gerar uma resposta dependendo da complexidade do prompt. Aguarde enquanto o indicador de "Aguardando resposta..." estiver ativo.
 - **🔑 API da OpenAI:** Garanta que suas chaves de API estejam corretas e ativas para evitar erros de autenticação.
 - **📂 Ambiente Virtual:** Utilizar um ambiente virtual é uma boa prática para evitar conflitos de dependências com outras aplicações Python instaladas no seu sistema.
+- **🖼️ Avatar Personalizado:** Para uma experiência mais imersiva, personalize a imagem do avatar utilizando uma URL ou caminho local válido.
 
 ## ⚠️ Considerações
 
 - Este código faz uso de recursos da API OpenAI que podem estar em versões beta e estão sujeitos a mudanças. Certifique-se de verificar a documentação oficial para atualizações.
 - Para que a integração funcione, é necessário ter uma chave de API válida da OpenAI e um ID de assistente que tenha sido criado previamente na plataforma OpenAI.
+- A reprodução de áudio requer uma chave de API válida da ElevenLabs e a configuração correta do `VOICE_ID`.
 
 ## 📜 Licença
 
@@ -91,7 +104,7 @@ Contribuições são incentivadas! Siga as etapas abaixo para contribuir com mel
 4. **Envie para o repositório remoto** (`git push origin feature/nova-feature`).
 5. **Abra um Pull Request**.
 
-## 📧 Contato
+## 📨 Contato
 
 Para quaisquer dúvidas ou feedback, sinta-se à vontade para entrar em contato pelo GitHub ou através do e-mail `narutogoit@gmail.com`.
 
